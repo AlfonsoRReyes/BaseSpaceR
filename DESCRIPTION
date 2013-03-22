@@ -1,0 +1,17 @@
+Package: BaseSpaceR
+Title: R SDK for BaseSpace RESTful API
+Description: R SDK for Illumina's BaseSpace cloud coumputing environment, 
+	     enabling the fast development of data analysis and
+	     visualisation tools.
+Version: 0.99.4
+Author: Adrian Alexa
+Maintainer: Adrian Alexa <aalexa@illumina.com>
+biocViews: Infrastructure, DataRepresentation, ConnectTools, Software,
+        DataImport, HighThroughputSequencing, Sequencing, Genetics
+Depends: R (>= 2.15.0), methods, RCurl, RJSONIO
+Imports: methods
+Suggests: RUnit
+License: Apache License 2.0
+Collate: generics.R ServiceURI.R AppAuth.R Response.R Users.R Runs.R
+        Genomes.R Projects.R AppResults.R AppSessions.R Samples.R
+        Files.R Variants.R Coverage.R misc.R zzz.R
