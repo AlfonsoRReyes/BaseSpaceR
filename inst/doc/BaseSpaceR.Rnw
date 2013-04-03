@@ -48,7 +48,7 @@ The {\tt BaseSpaceR} package provides a complete R interface to Illumina's
 \href{https://developer.basespace.illumina.com/docs/content/documentation/rest-api/api-reference}{BaseSpace REST API},
 enabling the fast development of data analysis and visualisation tools. 
 Besides providing an easy to use set of tools for manipulating the data from BaseSpace,
-it also facilitate the access to R's rich environment of statistical and data analysis
+it also facilitates the access to R's rich environment of statistical and data analysis
 open source tools.
 
 Features include:
@@ -60,7 +60,7 @@ Features include:
 \item S4 class system used to represent the BaseSpace data model.
 \item Templates for uploading and creating AppResults {\it [under development]}.
 \item Integration with Bioconductor libraries and data containers {\it [under development]}.
-\item Portability works on most platforms, Linux, Windows, Mac OS X.
+\item Portability on most platforms: Linux, Windows and Mac OS X.
 \end{itemize}
 
 BaseSpace is a proprietary cloud platform developed by 
@@ -69,20 +69,13 @@ General information about BaseSpace can be found at \href{https://basespace.illu
 and resources for BaseSpace developers can be found at
 \href{https://developer.basespace.illumina.com}{developer.basespace.illumina.com}.
 
-We assume the user has some familiarity with the 
-\href{https://developer.basespace.illumina.com/docs}{BaseSpace API} and the 
-\href{http://www.r-project.org}{R environment}.
-Most of the exposed R methods take the same parameters as the REST methods they
-implement/use and we advise the developers to regularly check the
-\href{https://developer.basespace.illumina.com/docs/content/documentation/rest-api/api-reference}{REST API reference}
-documentation.  
 
 \subsection{Developing BaseSpace applications}
 \label{subsec:appdevel}
 
 The following briefly presents the steps necessary to get started with {\tt BaseSpaceR}
 and the process of creating a new App. At the same time it provides an outlook of
-the sections to follow. It is essential for the developer to read through BaseSpace 
+the sections to follow. It is essential for the developer to read through BaseSpace's 
 \href{https://developer.basespace.illumina.com/docs/content/documentation/getting-started/overview}{Getting Started}
 guide to better understand these steps.
 
@@ -115,23 +108,42 @@ guide to better understand these steps.
 \end{enumerate}
 
 
-especially the \href{https://developer.basespace.illumina.com/docs/content/documentation/getting-started/overview#Steps_for_developing_your_first_App}{Steps for developing your first App} 
-
+We further assume the user has some familiarity with the 
+\href{https://developer.basespace.illumina.com/docs}{BaseSpace API} and the 
+\href{http://www.r-project.org}{R environment}.
+Most of the exposed R methods take the same parameters as the REST methods they
+implement/use and we advise the developers to regularly check the
+\href{https://developer.basespace.illumina.com/docs/content/documentation/rest-api/api-reference}{REST API reference}
+documentation.  
 
 
 \section{Installation}
 \label{sec:install}
 
-This section briefly describe the necessary steps to get {\tt BaseSpaceR} running on
-your system. We assume that the user have the \href{http://www.r-project.org}{R environment}
+This section briefly describes the necessary steps to get {\tt BaseSpaceR} running on
+your system. We assume the user have the \href{http://www.r-project.org}{R environment}
 already installed and it is fairly familiar with it. R 2.15.0 or later and {\tt RCurl}
-and {\tt RJSONIO} packages are required to be able to install and run {\tt BaseSpaceR}.
+and {\tt RJSONIO} packages are required for installing and running {\tt BaseSpaceR}.
  
-{\it The {\tt BaseSpaceR} package is available from the ...
-  
-  [Installation instructions]}
+The {\tt BaseSpaceR} package is available from the \href{http://www.bioconductor.org}{Bioconductor} repository.
+In order to install the package one needs first to install the core Bioconductor packages. 
+If you have already installed Bioconductor packages on your system then you can skip
+the two lines below.
 
-Using the package. 
+<<eval = FALSE>>=
+source("http://bioconductor.org/biocLite.R")
+biocLite()
+@ 
+
+Once the core Bioconductor packages are installed, we can install the 
+{\tt BaseSpaceR} package by:
+
+<<eval = FALSE>>=
+source("http://bioconductor.org/biocLite.R")
+biocLite("BaseSpaceR")
+@ 
+
+To use the package we load it using the {\tt library()} function.
 <<>>=
 library(BaseSpaceR)
 @
@@ -146,7 +158,8 @@ packages are automatically loaded.
 
 
 The data model exposed by the BaseSpace API consists of the following major
-resources/entities:
+{\bf resources/entities}:
+
 \begin{itemize}
 \item[] {\bf Users:} A user is the individual performing the analysis in BaseSpace.
 \item[] {\bf Runs:} A run is a collection of BCL files associated with an individual
@@ -162,21 +175,19 @@ resources/entities:
   AppResult and allows grouping by showing the instance of an application.
 \item[] {\bf Files:} The files associated with a Run, Sample, or AppResult. All files
   for each resource are in the File resource.
-\item[] {\bf Genomes:} These are the reference genomes that exist in BaseSpace, this
-  resource gives information about the origin and build for each genome
+\item[] {\bf Genomes:} These are the reference genome sequences that exist in BaseSpace.
+  This resource gives information about the origin and build for each genome
 \end{itemize}
 
 {\tt BaseSpaceR} provides classes and methods to interface with this data model.
 Each {\bf resource} is modeled by a S4 class. For every query the REST server receives,
-a response in the form of a JSON object is returned.
+a response in the form of a JSON object is return.
 
-Conceptually there are two response types, an individual response and a collection 
-response. The former is used when querying an individual item/instance within a resource,
-specified by the item ID, and it is modeled by the {\tt Item} class. The later is used for
-listing the items/instances available for a given resource and it is modeled by the
-{\tt Collection} class.
-
-We briefly describe the {\tt Item} and {\tt Collection} interfaces.
+Conceptually there are two response types exposed by BaseSpace, an individual response 
+and a collection response. The former, modeled by the R  {\tt Item} class, is used when 
+querying an individual item/instance (specified by the item ID) within a resource.
+The later is used for listing the items/instances available for a given resource and is
+modeled by the R {\tt Collection} class.
 
 \subsection{{\tt Item} objects}
 \label{subsec:item}
@@ -226,10 +237,10 @@ instance one of these two objects
 \section{Sample Session - Quick API guide}
 \label{sec:quickGuide}
 
-This section describes a handful of the API calls implemented by this SDK, that we think
-are sufficient to give the user a flavor of how the SDK works. Please note that 
-within this document we are limited by the permission to the BaseSpace resources.
-Therefore the examples shown here are restricted to browsing the data. 
+This section describes a few of the API calls implemented by this SDK, that should be
+sufficient to give the user a flavor of how it works. Please note that within this 
+document we are limited by the permission to the BaseSpace resources. Therefore the
+examples shown here are restricted to browsing the data. 
 
 A more comprehensive example, in which we select the FASTQ file(s) from a sample and
 compute Q-score statistics, can be seen in the other vignette shipped with this package,
@@ -260,14 +271,14 @@ data(aAuth)
 aAuth
 @ 
 
-If the access token is valid, which is in our case, then the connection with the server
+If the access token is valid, which it is in our case, then the connection with the server
 is established and we can see it by printing the {\tt AppAuth} object (Authorized: TRUE).
-Alternatively, we can use the {\tt hasAccess} method, which returns {\tt TURE} if 
+Alternatively, we can use the {\tt hasAccess} method, which returns {\tt TRUE} if 
 the access token is valid and {\tt FALSE} otherwise. 
 
 Now that our client App is authenticated with the server we can start performing 
 queries to the BaseSpace resources. 
-
+xsa
 \subsection{Users}
 \label{subsec:users}
 
@@ -497,12 +508,12 @@ for details on renewing permissions.
 \paragraph{Samples and AppResults}
 \label{par:samples}
 
-The samples and Samples and AppResults resources have similar interfaces. Projects 
-There are no files directly associated with a Project, but both Samples and AppResults
-each have files within them. 
+The Samples and AppResults resources have similar interfaces. There are no files directly
+associated with a Project, but both Samples and AppResults each have files within them. 
 
-In general samples are the result of demultiplexing and are thought as the holding the
-input data for an App. One example of data within a Samples resource are the FASTQ files.
+In general, samples are the result of demultiplexing and can be considered to be holding
+the input data for an App. One example of data within a Samples resource are the FASTQ
+files.
 
 The AppResults resource is used for keeping the result of an App. On top of the typical 
 listing and accessing data from this resource, the user can also create new and update 
@@ -668,8 +679,8 @@ section before going forward with this document.
 BaseSpaceR offers the following options for an App to authenticate with BaseSpace.
 \begin{itemize}
 \item Use a pre-generated access token.
-\item Use the OAuth v2 process. This is the recommend option, but this requires user 
-  interacting with a Web browser. 
+\item Use the OAuth v2 process. This is the recommended option, but this requires
+  the user interacting directly with a Web browser. 
 \item Use the AppSessions and \href{https://developer.basespace.illumina.com/docs/content/documentation/authentication/app-triggering}{BaseSpace Application Triggering} workflow.
   However this requires a web server to process App launch. {\it [under development]}
 \end{itemize}
@@ -681,8 +692,8 @@ To start the authentication process we need to instantiate an {\tt AppAuth} obje
 with the {\tt client\_id} and the {\tt client\_secret}.
 
 <<>>=
-myAppClientId = "aaaaa8acb37a441fa71af5072fd7432b"
-myAppClientSecret = "bbbbb8acb37a441fa71af5072fd7432b"
+myAppClientId <- "aaaaa8acb37a441fa71af5072fd7432b"
+myAppClientSecret <- "bbbbb8acb37a441fa71af5072fd7432b"
 
 aAuth <- AppAuth(client_id = myAppClientId,
                  client_secret = myAppClientSecret,
@@ -703,7 +714,7 @@ If {\tt scope} parameter is missing the default setting, {\tt browse~global} is 
 
 
 If the specified {\tt client\_id} and {\tt client\_secret} were valid, the {\tt AppAuth()}
-constructor would have initiate the authentication process, in which case the user is
+constructor would have initiated the authentication process, in which case the user is
 shown the following message:
 \begin{Schunk}
 \begin{Soutput}
@@ -798,9 +809,9 @@ If the access token is valid, which should be in our case, the connection with t
 server is established and we can see it by printing the {\tt AppAuth} object
 {\it Authorized:    TRUE}.
 
-Please not that it does not make sens to specify a scope since the scope is already 
-encapsulated in the access token. Also, we don't need to provide the {\tt client\_id} 
-and the {\tt client\_secret} since once the access token is available they are not 
+Please note that it does not make sense to specify a scope because the scope is already 
+encapsulated in the access token. Also, the {\tt client\_id} and the {\tt client\_secret}
+are not required in this case, given that once the access token is available they are not 
 needed to communicate with the server. However, they can be specified together with
 the pre-generated access token.
 

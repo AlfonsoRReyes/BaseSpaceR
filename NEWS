@@ -1,3 +1,16 @@
-CHANGES IN VERSION 0.99.0
+VERSION 1.0.0
 -------------------------
 
+PACKAGE FEATURES
+
+    o BaseSpaceR is a R SDK for Illumina's BaseSpace cloud computing environment,
+      enabling the rapid prototyping and development of production ready application
+      for next-gen sequencing data.
+
+    o It provides a set of S4 classes and methods to interface with BaseSpace data model.
+
+    o It allows for persistent connections with BaseSpace REST server and offers 
+      support for the REST API query parameters.
+
+    o It allows for queries across multiple Projects, Samples, Files, AppResults, etc.,
+      using vectorized operations in line with the R semantic.

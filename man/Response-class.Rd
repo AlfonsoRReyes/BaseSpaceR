@@ -106,55 +106,58 @@
 \title{\code{Item}, \code{Collection} and \code{Response} objects}
 
 \description{
-  These virtual classes provide the building block for the containers
-  return by quering various resources.
+  These virtual classes provide the building blocks for the containers
+  return by quering various BaseSpace resource. They are modeled after
+  the Response container defined by the REST API.
 
-  Modeled after the \code{Response} defined in the REST API.
+  Conceptually there are two response types exposed by BaseSpace, an
+  individual response and a collection response. The former, modeled by
+  the \code{Item} S4 class, is used when querying an individual
+  item/instance within a resource. The later is used for listing the
+  items/instances available for a given resource and is modeled by the
+  \code{Collection} S4 class.
 }
 
 
 \section{Item Accessors}{
-  In the following \code{x} is an Item object.
+  The \code{Item} class models a simple unordered set of key/value
+  pairs. There is a core set of keys, for which access methods are
+  defined and which are inherited by any child class.
+  
+  In the following \code{x} is an \code{Item} object.
 
   \describe{
-    \item{}{
-      \code{$}:
-      The \code{$} operator can be used to access the Item elements. When
-      \code{x} is an Item object this is equivalet to \code{@}. But you
-      can think at it as user level operator. Unlike \code{@} the
-      replace method is not implemented for \code{$}.
+    \item{\code{$}:}{
+      The \code{$} operator can be used to access the
+      Item elements. When \code{x} is an Item object this is equivalet
+      to \code{@}. But one can think at it as user level operator.
+      Unlike \code{@} the replace method is not implemented for \code{$}.
     }
-    \item{}{
-      \code{Id(x)}:
-      Id of the resource. Character string, though it will always be an integer.
+    \item{\code{Id(x)}:}{
+      Id of the resource. Character string, though it
+      will always be an integer.
     }
-    \item{}{
-      \code{Name(x)}:
+    \item{\code{Name(x)}:}{
       Name of the selected resource.
     }
-    \item{}{
-      \code{Href(x)}:
-      Location of the resource in the API. The first component of the
-      URI is the version of the REST API.
+    \item{\code{Href(x)}:}{
+      Location of the resource in the API. The
+      first component of the URI is the version of the REST API.
     }
-    \item{}{
-      \code{DateCreated(x)}:
+    \item{\code{DateCreated(x)}:}{
       When this resource was created. Character string. It can be
       converted to a \code{Date} instace by \code{as.Date(DateCreated(x))}.
     }
-    \item{}{
-      \code{UserOwnedBy(x)}:
+    \item{\code{UserOwnedBy(x)}:}{
       Information about the User who owns this resource. At this moment
       this is a \code{list} object, but it might be replace with
       an object at a future point.
     }
-    \item{}{
-      \code{Status(x)}:
+    \item{\code{Status(x)}:}{
       The status of the resource. Can be of any type and it will be
       defined by the classes extended Item.
     }
-    \item{}{
-      \code{HrefBaseSpaceUI(x)}:
+    \item{\code{HrefBaseSpaceUI(x)}:}{
       The location of this project in BaseSpace. Character string giving
       the complete URL within the BaseSpace dashboard.
     }
@@ -162,45 +165,44 @@
 }
 
 \section{Collection Accessors}{
-  In the following \code{x} is a Collection object.
+  The \code{Collection} class models an ordered set of \code{Item}
+  objects and a set of predefined attributes. The interface
+  provided by the \code{Item} class is implemented by this class.
+  However, since we deal with an ordered set of objects, the methods
+  and the access methods, return a vector of the same length as the
+  size of the collection.
+  
+  In the following \code{x} is a \code{Collection} object.
+
+  All accesor implemented by the item class are implemented by
+  Collection class. However here the return value is a vector. If
+  \code{x} has 2 elements, then \code{Id(x)} will be a vector with 2
+  elements. The same stands for the general accessor \code{$}.
+  
   \describe{
-    \item{}{
-      All accesor implemented by the item class are implemented by
-      Collection class. however here the return value is a vector. If
-      \code{x} has 2 elements, then Id(x) will be a vector with 2
-      elements. The same stands for the general accessor \code{$}.
-    }
-    \item{}{
-      \code{length(x)}:
+    \item{\code{length(x)}:}{
       Returns the number of elements in Collection \code{x}.
     }
-    \item{}{
-      \code{Items(x)}:
-      List of Item objects.
+    \item{\code{Items(x)}:}{
+      List of \code{Item} objects.
     }
-    \item{}{
-      \code{TotalCount(x)}:
+    \item{\code{TotalCount(x)}:}{
       The total number of items in the collection as reported by the
       queried resource.
     }
-    \item{}{
-      \code{Offset(x)}:
+    \item{\code{Offset(x)}:}{
       The starting point the collection was read from.
     }
-    \item{}{
-      \code{Limit(x)}:
+    \item{\code{Limit(x)}:}{
       The maximum number of items returned. Ranges from 0 to 1024.
     }
-    \item{}{
-      \code{SortDir(x)}:
+    \item{\code{SortDir(x)}:}{
       The way the collection is sorted, either ascending or descending.
     }
-    \item{}{
-      \code{SortBy(x)}:
+    \item{\code{SortBy(x)}:}{
       The field to use to sort the collection.
     }
   }
-  In the following \code{x} is a Collection object.
 }
 
 
@@ -211,13 +213,9 @@
 
 \section{Methods}{
   \describe{
-    \item{}{
-      \code{length(x)}:
-      Returns the number of elements in Collection \code{x}.
-    }
-
-    \item{show}{Prints the object... }
-    \item{as.list}{List representation of the object... }
+    \item{\code{length(x)}:}{Returns the number of elements in Collection \code{x}.}
+    \item{\code{show(x)}:}{Prints the object.}
+    \item{\code{as.list(x)}:}{R \code{list} representation of the object.}
   }
 }
 

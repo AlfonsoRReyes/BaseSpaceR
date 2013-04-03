@@ -81,7 +81,7 @@ getQscoreStats <- function(x) {
 
 This document describes a simple working session using {\tt BaseSpaceR}. 
 For more details on the functions used throughout this document please see the 
-package main vignette - BaseSpaceR. 
+package main vignette - {\bf BaseSpaceR.pdf}. 
 
 A typical BaseSpace session can be divided into the following steps:
 \begin{itemize}
@@ -91,8 +91,8 @@ A typical BaseSpace session can be divided into the following steps:
 \item Uploading results back to BaseSpace
 \end{itemize}
 
-In this sample session we'll show how to explore the project and sample data, select
-the FASTQ file(s) associated with the chosen sample, compute and plot Q-score statistics 
+In this sample session we show how to explore the project and sample data, select the
+FASTQ file(s) associated with the chosen sample, compute and plot Q-score statistics 
 at each cycle, create an {\tt AppResults} instance and link the generated figure to it. 
 
 <<>>=
@@ -103,13 +103,13 @@ library(BaseSpaceR)
 \section{Authentication}
 \label{sec:auth}
 
-The first step is the authentication of the client application with the BaseSpace 
-REST server.  The authentication and communication between the client and the server is
-handled by an {\tt AppAuth} instance. There are two ways to create an {\tt AppAuth}
-instance. The easiest is to provide a pre-generated access token, see help for 
-{\tt AppAuth} and the main vignette for more details on this.
-Assuming the user has access to such a token, stored as a character string 
-in {\tt app\_access\_token} variable, the handler can be created as follows:
+The first step is the authentication of the client application with the BaseSpace REST
+server.  The authentication and communication between the client and the server are handled
+by an {\tt AppAuth} instance. There are two ways to create an {\tt AppAuth} instance.
+The simplest is to provide a pre-generated access token, see the help page for {\tt AppAuth}
+and the package main vignette for more details on this process.
+We further assume the user has access to such a token, stored as a character string 
+in {\tt app\_access\_token} variable. The communication handler can be created as follows:
 
 <<>>=
 aAuth <- AppAuth(access_token = app_access_token)
@@ -119,9 +119,9 @@ aAuth
 If the access token is valid then the connection with the server is established and 
 we can see it by printing the {\tt AppAuth} object (Authorized: TRUE).
 
-One can also use the OAuth2 authentication process, but in this case user 
-interaction is required. Authentication through the OAuth2 process is out of the scope
-of this document and we'll not show it here.
+One can also use the OAuth v2 authentication process, but in this case direct user 
+interaction is required. Authentication through the OAuth v2 process is out of the scope
+of this document and it will not be shown here.
 
 Please note that for the purpose of this document one needs an access token with the 
 following scope: {\tt create~projects,~write~global}. 
@@ -285,7 +285,7 @@ qtab <- lapply(floc, getQscoreCounts)
 @ 
 
 One can use the {\tt parallel} package and the {\tt mclapply} function to compute
-{\tt qtab}. This is a perfect scenario for batch processing since we perform 
+{\tt qtab}. This is an ideal scenario for batch processing since we perform 
 the computation on each FASTQ file separately. 
 
 <<eval = FALSE>>=
