@@ -49,7 +49,8 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                           },
 
                           initializeAuth = function(scope = "browse global",
-                            resource = "oauthv2/deviceauthorization") {
+                            resource = "oauthv2/deviceauthorization",
+                            useBrowser = TRUE) {
                             'Method that initialize the authentication process.
                              It is automaticaly run by the class generic constructor.
                             '
@@ -68,23 +69,31 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                               return()
                             }
 
-                            ## since the request is succesful we should rest the access_token
+                            ## since the request is succesful we should reset the access_token
                             access_token <<- character()
                             
                             ## present the verification URI
-                            cat("\nPerform OAuth authentication using the following URI:\n")
-                            cat("\t", res$body$verification_with_code_uri, "\n\n")
-                            
+                            if(useBrowser) {
+                              cat("\n Launching browser for OAuth authentication...\n")
+                              browseURL(res$body$verification_with_code_uri)
+                            } else {
+                              cat("\nPerform OAuth authentication using the following URI:\n")
+                              cat("\t", res$body$verification_with_code_uri, "\n\n")
+                            }
+
+                            ## always return the uri/code for programmatic use
                             return(invisible(list(uri = res$body$verification_uri,
                                                   code = res$body$user_code)))
                           },
                           
-                          requestAccessToken = function(resource = "oauthv2/token") {
+                          requestAccessToken = function(resource = "oauthv2/token",
+                            verbose = TRUE) {
                             'Retrives and sets the access token.'
-                            
-                            if(length(access_token)) {
-                              cat("Access tocken already available! Run 'initializeAuth()' for a new authentication!")
-                              return(invisible())
+
+                            ## We already have a feasible access tocken
+                            if((length(access_token) > 0L) && has_access()) {
+                              if(verbose) cat("Access tocken already available! Run 'initializeAuth()' for a new authentication!\n")
+                              return(invisible(-1L))
                             }
                               
                             ## retrieve the device_code from the current state: .self$response
@@ -100,9 +109,11 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                                               code = device_code))
                             
                             if(res$header[["status"]] != "200") {
-                              cat(res$header[["statusMessage"]], "\n")
-                              cat(toJSON(res$body, pretty = TRUE), "\n")
-                              return(invisible())
+                              if(verbose) {
+                                cat(res$header[["statusMessage"]], "\n")
+                                cat(toJSON(res$body, pretty = TRUE), "\n")
+                              }
+                              return(invisible(as.integer(res$header[["status"]])))
                             }
                             
                             ## store the current state in the .self$response
@@ -111,15 +122,14 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                             cat("\nAccess token successfully acquired!\n\n")
                             access_token <<- res$body$access_token
                             
-                            ## DO we also set the curl handler?
+                            ## Set the curl handler to enable persistant connections
                             set_handle()
                             
-                            return(invisible())
+                            return(invisible(1L))
                           },
 
                           ## Check if the available access token is feasible and can be used to query the API
-                          ## Do we need a S4 method for this?
-                          ## And we could also return the error codes/status ...
+                          ## We could potentially return the error codes/status ...
                           has_access = function() {
                             'Perform a GET request to the server and check if the
                              credentials are good

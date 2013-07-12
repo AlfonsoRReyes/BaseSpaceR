@@ -11,6 +11,16 @@ make_resource <- function(...)  file.path(...)
 as_id <- function(id) { if(is.numeric(id)) as.integer(id) else id }
 
 
+## check a numeric vector contains only integers (NA allowed)
+## and if so it converts it to integers
+.forceIntegers <- function(x) {
+  if(is.numeric(x) && max(x, na.rm = TRUE) <= .Machine$integer.max &&
+     all(abs(x - round(x)) < .Machine$double.eps^0.5, na.rm = TRUE))
+    x <- as.integer(x)
+  return(x)
+}
+
+
 ################################
 ## Couple list utility functions
 

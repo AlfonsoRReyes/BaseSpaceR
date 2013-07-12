@@ -147,7 +147,7 @@ ItemFromJList <- function(class = "Item", l) {
   
   object <- new(class)
   for(el in intersect(names(l), slotNames(object)))
-    slot(object, el, check = TRUE) <- as_id(l[[el]])
+    slot(object, el, check = TRUE) <- .forceIntegers(l[[el]])
   
   return(object)
 }
@@ -166,7 +166,7 @@ CollectionFromJList <- function(class = "Collection", l, items) {
     if(length(l$Items) != as.integer(l$DisplayedCount))
       stop("'Items' must have the same length as given by the 'DisplayedCount'")
     for(el in intersect(names(l), slotNames(object)))
-      slot(object, el, check = TRUE) <- as_id(l[[el]])
+      slot(object, el, check = TRUE) <- .forceIntegers(l[[el]])
   } else {
     if(!missing(items)) {
       object@Items <- l$Items

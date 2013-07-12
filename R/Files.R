@@ -9,7 +9,7 @@ setClass("fileItem", contains = "Item",
            UploadStatus = "character", # The status of the upload of this file
            HrefContent = "character", # There in the API the content of the file is located
            HrefCoverage = "character", # The location in the API of the coverage for this file
-           Size = "integer", # The size, in bytes, of this file
+           Size = "numeric", # The size, in bytes, of this file - we have to use numeric since some files are larger than 2GB
            Path = "character", # The path to this file in the BaseSpace UI
            HrefVariants = "character", # The location in the API of the variants for this file
            ContentType = "character", # The type of content contained within this file
@@ -189,7 +189,7 @@ setMethod("getFiles", "AppAuth",
                         file.path(destDir, fpath),
                         fInfo[[i]]$Size)
                 if(verbose)
-                  cat("done!")
+                  cat("done!\n")
               }
               return(invisible())
             }
@@ -200,7 +200,7 @@ setMethod("getFiles", "AppAuth",
                 cat("Downloading file:", fInfo[[i]]$Name, "... ")
               fInfo[[i]]$Content <- .toMem(res[[i]]$HrefContent, fInfo[[i]]$Size)
               if(verbose)
-                cat("done!")
+                cat("done!\n")
             }
             
             if(length(fInfo) == 1L) 
