@@ -301,7 +301,7 @@ Name(u)
 @ 
 
 Not all elements of a {\tt Response} object have methods associated to them. There 
-are only a core of elements for which methods exists, see Section~\ref{sec:dataModel}.
+are only a core of elements for which methods exists, see Section \ref{sec:dataModel}.
 However every element of a {\tt Response} object can be accessed using the general 
 access operator {\tt '\$'} and the element key/name.
 

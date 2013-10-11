@@ -119,7 +119,7 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                             ## store the current state in the .self$response
                             response <<- res$body
 
-                            cat("\nAccess token successfully acquired!\n\n")
+                            cat(" Access token successfully acquired!\n\n")
                             access_token <<- res$body$access_token
                             
                             ## Set the curl handler to enable persistant connections
@@ -231,6 +231,37 @@ AppAuth <- function(client_id = character(), client_secret = character(),
   
   return(app)
 }
+
+
+## High level function for starting the OAuth process
+## Returns an AppAuth handler with a valid access tocken or NULL
+## @...  parameters to pass to initializeAuth() method - same as for AppAuth()
+performOAuth <- function(client_id = character(), client_secret = character(),
+                         uri = ServiceURI(), ..., sec = 3L) {
+
+  ## Instance of AppAuth class
+  app <- .AppAuth$new(client_id = client_id, client_secret = client_secret, uri = uri)
+  
+  ## Start the OAuth process - 'scope' is provided via '...'
+  ##app$initializeAuth(useBrowser = TRUE, ...)
+  app$initializeAuth(...)
+
+  ## Wait for the user to authenticate - time outs after 20 cycles ~1 min
+  for(i in 1:20) {
+    Sys.sleep(sec)
+    if(app$requestAccessToken(verbose = FALSE) == 1L) {
+      i <- 1L
+      break
+    }
+  }
+  
+  ## If it timeouts we return an error
+  if(i == 20) 
+    stop("User has denied the access request or has not yet approved the access request.")
+  
+  return(app)
+}
+
 
 
 ## User level function for starting the OAuth process and obtaining the access tocken

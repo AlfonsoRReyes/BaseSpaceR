@@ -5,6 +5,7 @@
 
 \alias{AppAuth-class}
 \alias{AppAuth}
+\alias{performOAuth}
 
 \alias{initializeAuth,AppAuth-method}
 \alias{initializeAuth}

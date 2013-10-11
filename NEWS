@@ -4,34 +4,25 @@ CHANGES IN VERSION 1.1.x
 
 NEW FEATURES
 
-    o Unit tests added via the Runit.
-    o ...
-    o ...
-    o ...
-
-SIGNIFICANT USER-VISIBLE CHANGES
-
+    o New high level function performOAuth() makes the App authentication easier.    
     o initializeAuth() now fires up a browser window and starts the OAuth v2 process.
       Users can use 'useBrowser' parameter to control this behaviour.
 
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
     o requestAccessToken() now returns an integer giving the status of request:
-      	*  1 if the request was succesful and an access_token was received
+        *  1 if the request was succesful and an access_token was received
 	*  -1 if the AppAuth handle already contains a feasible access token
 	*  An integer larger than one if the request fails.
       There is also a new 'verbose' parameter controling the messages shown to
       the user. By default 'verbose = TRUE' 
 
-    o fileItem$Size is now stored as a numeric ...
-
-DEPRECATED AND DEFUNCT
-
-   o ...
-
 
 BUG FIXES
 
-   o fileItem$Size ...
    o Added end of line character to some messages.
+   o fileItem$Size is now stored as a numeric, thus allowing for file larger than 2GB.
 
 
 

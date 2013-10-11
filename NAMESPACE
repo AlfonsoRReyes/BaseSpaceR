@@ -1,5 +1,6 @@
 ##useDynLib(BaseSpaceR)
 
+import(RJSONIO)
 import(methods)
 importFrom(utils, packageVersion)
 importMethodsFrom(RCurl, close)
@@ -23,6 +24,7 @@ export(## Non-generic functions:
 
        ## AppAuth.R
        AppAuth,
+       performOAuth,
        
        ## Generic functions:
        uri,
