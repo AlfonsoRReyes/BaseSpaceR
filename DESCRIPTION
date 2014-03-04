@@ -14,4 +14,4 @@ Collate: generics.R ServiceURI.R AppAuth.R Response.R Users.R Runs.R
         Genomes.R Projects.R AppResults.R AppSessions.R Samples.R
         Files.R Variants.R Coverage.R misc.R zzz.R
 biocViews: Infrastructure, DataRepresentation, ThirdPartyClient,
-        Software, DataImport, Sequencing, Sequencing, Genetics
+        Software, DataImport, Sequencing,  Genetics
