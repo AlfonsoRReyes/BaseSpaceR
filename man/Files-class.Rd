@@ -15,11 +15,24 @@
 \alias{Files,AppAuth-method}
 \alias{Files,FilesSummary-method}
 
+\alias{countFiles}
+\alias{countFiles,AppAuth-method}
+\alias{countFiles,Response-method}
+\alias{countFiles,AppResults-method}
+\alias{countFiles,AppResultsSummary-method}
+\alias{countFiles,Runs-method}
+\alias{countFiles,RunsSummary-method}
+\alias{countFiles,Samples-method}
+\alias{countFiles,SamplesSummary-method}
+
 \alias{listFiles}
 \alias{listFiles,AppAuth-method}
 \alias{listFiles,Runs-method}
+\alias{listFiles,RunsSummary-method}
 \alias{listFiles,Samples-method}
+\alias{listFiles,SamplesSummary-method}
 \alias{listFiles,AppResults-method}
+\alias{listFiles,AppResultsSummary-method}
 
 \alias{getFiles,AppAuth-method}
 \alias{getFiles}

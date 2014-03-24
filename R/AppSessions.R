@@ -53,6 +53,21 @@ setMethod("AppSessions", "AppAuth",
 ############################################################
 ## Under development ... need to see the use cases !!!
 
+## count from AppAuth
+setMethod("countAppSessions", "AppAuth",
+          function(x) {
+            res <- x$doGET(resource = "users/current/appsessions", Limit = 0)
+            if(is.null(res))
+              return(NA_integer_)
+
+            return(as.integer(res$TotalCount))
+          })
+
+## count from any Response instance
+setMethod("countAppSessions", "Response", function(x) countAppSessions(x@auth))
+
+
+            
 setMethod("listAppSessions", "AppAuth",
           function(x, id) {
             ####

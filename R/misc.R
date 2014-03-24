@@ -1,8 +1,13 @@
+## !!! Do not export !!!
 ## for internal use - replacement for file.path
 ## will work as paste(..., sep = "/")
 ## could be optimized such that we cannonize the resource
-## !!! Do not export !!!
 make_resource <- function(...)  file.path(...)
+
+## !!! Do not export !!!
+## extract the last component from the resource href
+## this works only for resourse hrefs and not for listing a resourses Href*
+id_from_href <- function(path) basename(path)
 
 
 ## Simple function to be sure that ids are not passed as numerics
@@ -11,13 +16,31 @@ make_resource <- function(...)  file.path(...)
 as_id <- function(id) { if(is.numeric(id)) as.integer(id) else id }
 
 
-## check a numeric vector contains only integers (NA allowed)
-## and if so it converts it to integers
+## Check if a numeric vector contains only integers (NA allowed)
+## If all elements are integers it converts the input to an integer vector
 .forceIntegers <- function(x) {
   if(is.numeric(x) && max(x, na.rm = TRUE) <= .Machine$integer.max &&
      all(abs(x - round(x)) < .Machine$double.eps^0.5, na.rm = TRUE))
     x <- as.integer(x)
   return(x)
+}
+
+
+## !!! Do not export !!!
+## Parse the URI spliting the URI from the parameters.
+## The parameters are returned as a named vector.
+tokenizeURI <- function(x) {
+  x <- strsplit(x, split = "?", fixed = TRUE)[[1L]]
+
+  ## the URL - it contains the http://
+  URL <- x[1L]
+
+  ## the parameters
+  x <- strsplit(strsplit(x[2L], split = "&", fixed = TRUE)[[1L]], split = "=", fixed = TRUE)
+  param <- vapply(x, "[", character(1L), 2L)
+  names(param) <- vapply(x, "[", character(1L), 1L)
+
+  return(list(URL = URL, param = param))
 }
 
 
@@ -65,6 +88,48 @@ transpose_list <- function(x, check.names = FALSE) {
     l[[i]] <- lapply(x, "[[", i)
   
   return(l)
+}
+
+
+################################
+## REST API utilities
+
+## !!! Do not export !!!
+## wrapper for internal use only - assumes JSON parsing 
+.extractStatus <- function(x) {
+
+  if("ResponseStatus" %in% names(x$body)) {
+    ## API resource calls
+    er <- x$body$ResponseStatus
+    return(ResponseStatus(header = x$header,
+                          Message = er$Message, 
+                          ErrorCode = er$ErrorCode,
+                          Errors = er$Errors))
+  }
+
+  ## Authentication calls
+  ResponseStatus(header = x$header,
+                 Message = x$body$error_description, 
+                 ErrorCode = x$body$error)
+}
+  
+
+## !!! Do not export !!!
+## for internal use - low level debug function,
+## returns the (un)parsed JSON as an R list.
+## @x: AppAuth instance
+## @what: c("runs/1927", "projects/1", "projects/1/appresults", ...)
+
+query <- function(x, what, ..., asJSON = TRUE) {
+    if(is.null(x$curl_handle))
+        x$set_handle()
+    
+    res <- GET(x$uri, resource = what, curl = x$curl_handle, ..., asJSON = asJSON)
+    
+    retVal <- res$body
+    attr(retVal, "header") <- res$header
+    
+    return(retVal)
 }
 
 

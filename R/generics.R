@@ -29,6 +29,20 @@ if(!isGeneric("hasAccess"))
   setGeneric("hasAccess", function(x, ...) standardGeneric("hasAccess"))
 
 
+## !!! Do not export !!!
+## Accessor methods for ResponseStatus
+if(!isGeneric("Hstatus"))
+    setGeneric("Hstatus", function(x, ...) standardGeneric("Hstatus"))
+if(!isGeneric("HstatusMessage"))
+    setGeneric("HstatusMessage", function(x, ...) standardGeneric("HstatusMessage"))
+if(!isGeneric("Message"))
+    setGeneric("Message", function(x, ...) standardGeneric("Message"))
+if(!isGeneric("ErrorCode"))
+    setGeneric("ErrorCode", function(x, ...) standardGeneric("ErrorCode"))
+
+if(!isGeneric("success"))
+    setGeneric("success", function(x, ...) standardGeneric("success"))
+
 
 ## !!! Do not export !!!
 ## for internal use as an 'accessor' - recursive slot() ?
@@ -73,7 +87,7 @@ if(!isGeneric("auth"))
 
 
 ## API calls - methods for Resources
-## Displacement is done on AppAuth and Response 
+## Dispatching is done on AppAuth and Response 
 if(!isGeneric("Users"))
   setGeneric("Users", function(x, ...) standardGeneric("Users"))
 
@@ -81,6 +95,8 @@ if(!isGeneric("Runs"))
   setGeneric("Runs", function(x, ...) standardGeneric("Runs"))
 if(!isGeneric("listRuns"))
   setGeneric("listRuns", function(x, ...) standardGeneric("listRuns"))
+if(!isGeneric("countRuns"))
+  setGeneric("countRuns", function(x, ...) standardGeneric("countRuns"))
 
 if(!isGeneric("Projects"))
   setGeneric("Projects", function(x, ...) standardGeneric("Projects"))
@@ -88,11 +104,15 @@ if(!isGeneric("listProjects"))
   setGeneric("listProjects", function(x, ...) standardGeneric("listProjects"))
 if(!isGeneric("createProject"))
   setGeneric("createProject", function(x, ...) standardGeneric("createProject"))
+if(!isGeneric("countProjects"))
+  setGeneric("countProjects", function(x, ...) standardGeneric("countProjects"))
 
 if(!isGeneric("Samples"))
   setGeneric("Samples", function(x, ...) standardGeneric("Samples"))
 if(!isGeneric("listSamples"))
   setGeneric("listSamples", function(x, ...) standardGeneric("listSamples"))
+if(!isGeneric("countSamples"))
+  setGeneric("countSamples", function(x, ...) standardGeneric("countSamples"))
 
 if(!isGeneric("AppResults"))
   setGeneric("AppResults", function(x, ...) standardGeneric("AppResults"))
@@ -100,6 +120,8 @@ if(!isGeneric("listAppResults"))
   setGeneric("listAppResults", function(x, ...) standardGeneric("listAppResults"))
 if(!isGeneric("createAppResults"))
   setGeneric("createAppResults", function(x, ...) standardGeneric("createAppResults"))
+if(!isGeneric("countAppResults"))
+  setGeneric("countAppResults", function(x, ...) standardGeneric("countAppResults"))
 
 if(!isGeneric("AppSessions"))
   setGeneric("AppSessions", function(x, ...) standardGeneric("AppSessions"))
@@ -107,12 +129,15 @@ if(!isGeneric("listAppSessions"))
   setGeneric("listAppSessions", function(x, ...) standardGeneric("listAppSessions"))
 if(!isGeneric("updateAppSessions"))
   setGeneric("updateAppSessions", function(x, ...) standardGeneric("updateAppSessions"))
+if(!isGeneric("countAppSessions"))
+  setGeneric("countAppSessions", function(x, ...) standardGeneric("countAppSessions"))
 
 if(!isGeneric("Genomes"))
   setGeneric("Genomes", function(x, ...) standardGeneric("Genomes"))
 if(!isGeneric("listGenomes"))
   setGeneric("listGenomes", function(x, ...) standardGeneric("listGenomes"))
-
+if(!isGeneric("countGenomes"))
+  setGeneric("countGenomes", function(x, ...) standardGeneric("countGenomes"))
 
 if(!isGeneric("Files"))
   setGeneric("Files", function(x, ...) standardGeneric("Files"))
@@ -122,13 +147,17 @@ if(!isGeneric("getFiles"))
   setGeneric("getFiles", function(x, ...) standardGeneric("getFiles"))
 if(!isGeneric("putFiles"))
   setGeneric("putFiles", function(x, ...) standardGeneric("putFiles"))
+if(!isGeneric("countFiles"))
+  setGeneric("countFiles", function(x, ...) standardGeneric("countFiles"))
+
+if(!isGeneric("getBAMs"))
+  setGeneric("getBAMs", function(x, ...) standardGeneric("getBAMs"))
 
 
 if(!isGeneric("getVariantSet"))
   setGeneric("getVariantSet", function(x, ...) standardGeneric("getVariantSet"))
 if(!isGeneric("getVariants"))
   setGeneric("getVariants", function(x, ...) standardGeneric("getVariants"))
-
 
 if(!isGeneric("getCoverage"))
   setGeneric("getCoverage", function(x, ...) standardGeneric("getCoverage"))

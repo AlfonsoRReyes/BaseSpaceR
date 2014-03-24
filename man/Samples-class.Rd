@@ -19,6 +19,12 @@
 \alias{listSamples,AppAuth-method}
 \alias{listSamples,Projects-method}
 
+\alias{countSamples}
+\alias{countSamples,AppAuth-method}
+\alias{countSamples,Response-method}
+\alias{countSamples,Projects-method}
+\alias{countSamples,ProjectsSummary-method}
+
 
 \title{\code{Samples} and \code{SamplesSummary} objects }
 

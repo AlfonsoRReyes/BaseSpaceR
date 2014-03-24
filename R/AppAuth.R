@@ -10,10 +10,13 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                           client_secret = "character", 
                           ## address of the REST server (root url + version)
                           uri = "ServiceURI", 
-                          ## stores the last response from the server - the current state?
+                          ## stores the last response from the server during the authentication
                           response = "list",
+                          ## stores the status of the last response from the server
+                          response_status = "ResponseStatus",  
                           ## curl handler to allow for persistant connections
                           curl_handle = "CURLHandleORNULL",
+                          ## the access tocken 
                           access_token = "character"),
 
                         methods = list(
@@ -26,6 +29,10 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                             cat("\nServer\n")
                             methods::show(uri)
                             cat("\nAuthorized:     ", (length(access_token) > 0L) && has_access(), "\n")
+                          },
+
+                          showResponse = function() {
+                            cat(toJSON(response, pretty = TRUE), "\n")
                           },
                           
                           set_handle = function() {
@@ -59,31 +66,37 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                                             .params = list(response_type = "device_code",
                                               client_id = client_id, scope = scope))
 
+                            
+                            ## store the response status
+                            response_status <<- .extractStatus(res)
+                            
                             ## store the body in the .self$response
                             response <<- res$body
-                            
-                            ## check if we get a response containing the verification_uri
-                            if(!("verification_uri" %in% names(res$body))) {
-                              cat("Initialization for the device failed!\n")
-                              cat(toJSON(res$body, pretty = TRUE), "\n")
-                              return()
+
+                            ## fail nicely ...
+                            if(!success(response_status)) {
+                              warning("Initialization for the device failed!\n",
+                                      .printFail(response_status),
+                                      "Use showResponse() method to print the response body.")
+                              return(invisible(as.integer(Hstatus(response_status))))
                             }
 
-                            ## since the request is succesful we should reset the access_token
+                            ## since the request is succesful we should reset
+                            ## the current access_token if set
                             access_token <<- character()
                             
                             ## present the verification URI
                             if(useBrowser) {
                               cat("\n Launching browser for OAuth authentication...\n")
-                              browseURL(res$body$verification_with_code_uri)
+                              browseURL(response$verification_with_code_uri)
                             } else {
                               cat("\nPerform OAuth authentication using the following URI:\n")
-                              cat("\t", res$body$verification_with_code_uri, "\n\n")
+                              cat("\t", response$verification_with_code_uri, "\n\n")
                             }
-
+                            
                             ## always return the uri/code for programmatic use
-                            return(invisible(list(uri = res$body$verification_uri,
-                                                  code = res$body$user_code)))
+                            return(invisible(list(uri = response$verification_uri,
+                                                  code = response$user_code)))
                           },
                           
                           requestAccessToken = function(resource = "oauthv2/token",
@@ -107,17 +120,19 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                                               client_secret = client_secret,
                                               grant_type = "device",
                                               code = device_code))
-                            
-                            if(res$header[["status"]] != "200") {
-                              if(verbose) {
-                                cat(res$header[["statusMessage"]], "\n")
-                                cat(toJSON(res$body, pretty = TRUE), "\n")
-                              }
-                              return(invisible(as.integer(res$header[["status"]])))
-                            }
-                            
-                            ## store the current state in the .self$response
+
+                            ## save the response status
+                            response_status <<- .extractStatus(res)
+
+                            ## save the current state in the .self$response
                             response <<- res$body
+
+                            if(!success(response_status, OK = TRUE)) {
+                              warning("Failed acquiring the access token!\n",
+                                      .printFail(response_status),
+                                      "Use showResponse() method to print the response body.")
+                              return(invisible(as.integer(Hstatus(response_status))))
+                            }
 
                             cat(" Access token successfully acquired!\n\n")
                             access_token <<- res$body$access_token
@@ -138,8 +153,10 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
                               set_handle()
                             
                             res <- GET(uri, curl = curl_handle, resource = "users/current")
-  
-                            if(res$header[["status"]] != "200")
+                            ## save the response status
+                            response_status <<- .extractStatus(res)
+
+                            if(!success(response_status, OK = TRUE))
                               return(FALSE)
                             
                             return(TRUE)
@@ -157,19 +174,19 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
     set_handle()
   
   res <- GET(uri, curl = curl_handle, ...)
-  
-  if(res$header[["status"]] != "200") {
-    cat("\n", res$header[["statusMessage"]], "\n",
-        toJSON(res$body, pretty = TRUE), "\n")
-    return(invisible(NULL)) # Should we return the response body?
+
+  ## save the response status
+  response_status <<- .extractStatus(res)
+
+  if(!success(response_status, OK = TRUE)) {
+    warning("GET failed!\n", .printFail(response_status),
+            "Use showResponse() method to print the response body.")
+    ## store the current state in the .self$response
+    response <<- res$body 
+    return(invisible(NULL))
   }
   
-  ## store the current state in the .self$response
-  ##response <<- res$body
-
   ## we return only the Response element
-  ## the Notifications element can be returned as an attribute if necessary
-  ## the ResponseStatus is empty at this step ...
   return(res$body$Response)
 })
   
@@ -190,21 +207,39 @@ setClassUnion("CURLHandleORNULL", c("NULL", "CURLHandle"))
   else
     POST(uri, curl = h, postfields = postbody, ...)
   
-  
+  ## save the response status
+  response_status <<- .extractStatus(res)
+
   ## accept any HTTP 2xx code (Success)
-  if(!grepl("^2[[:digit:]]{2}$", res$header[["status"]])) {
-    cat("\n", res$header[["statusMessage"]], "\n", 
-            toJSON(res$body, pretty = TRUE), "\n")
-    return(invisible(NULL)) # Should we return the response body?
+  if(!success(response_status)) {
+    warning("POST failed!\n", .printFail(response_status),
+            "Use showResponse() method to print the response body.")
+    ## store the current state in the .self$response
+    response <<- res$body 
+    return(invisible(NULL))
   }
   
   ## we return only the Response element
-  ## the Notifications element can be returned as an attribute if necessary
-  ## the ResponseStatus is empty at this step ...
   return(res$body$Response)
 })
 
 
+## User level function for starting the OAuth process and obtaining the access tocken
+setMethod("requestAccessToken", "AppAuth", function(x, ...) x$requestAccessToken(...))
+setMethod("initializeAuth", "AppAuth", function(x, ...) x$initializeAuth(...))
+setMethod("hasAccess", "AppAuth", function(x) x$has_access())
+
+
+## ResponseStatus interface
+setMethod("Hstatus", "AppAuth", function(x) Hstatus(x$response_status))
+setMethod("HstatusMessage", "AppAuth", function(x) HstatusMessage(x$response_status))
+setMethod("Message", "AppAuth", function(x) Message(x$response_status))
+setMethod("ErrorCode", "AppAuth", function(x) ErrorCode(x$response_status))
+## do we need this?
+setMethod("success", "AppAuth", function(x) success(x$response_status))
+
+
+######################################################################
 
 
 ## Constructor - user level
@@ -214,7 +249,7 @@ AppAuth <- function(client_id = character(), client_secret = character(),
 
   ## Instance of AppAuth class
   ## We might need to do some validation on the client_id and client_secret...
-  app <- .AppAuth$new(client_id = client_id, client_secret = client_secret, uri = uri)
+  app <- .AppAuth(client_id = client_id, client_secret = client_secret, uri = uri)
 
   ## If the access_tocken is provided we don't need to perform OAuth protocol.
   ## Also for this to work we don't need the client_id/secrete.
@@ -240,7 +275,7 @@ performOAuth <- function(client_id = character(), client_secret = character(),
                          uri = ServiceURI(), ..., sec = 3L) {
 
   ## Instance of AppAuth class
-  app <- .AppAuth$new(client_id = client_id, client_secret = client_secret, uri = uri)
+  app <- .AppAuth(client_id = client_id, client_secret = client_secret, uri = uri)
   
   ## Start the OAuth process - 'scope' is provided via '...'
   ##app$initializeAuth(useBrowser = TRUE, ...)
@@ -261,13 +296,5 @@ performOAuth <- function(client_id = character(), client_secret = character(),
   
   return(app)
 }
-
-
-
-## User level function for starting the OAuth process and obtaining the access tocken
-setMethod("requestAccessToken", "AppAuth", function(x, ...) x$requestAccessToken(...))
-setMethod("initializeAuth", "AppAuth", function(x, ...) x$initializeAuth(...))
-setMethod("hasAccess", "AppAuth", function(x) x$has_access())
-
 
 

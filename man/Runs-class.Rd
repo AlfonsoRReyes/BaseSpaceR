@@ -15,10 +15,14 @@
 \alias{Runs,AppAuth-method}
 \alias{Runs,RunsSummary-method}
 
-
 \alias{listRuns}
 \alias{listRuns,AppAuth-method}
 \alias{listRuns,Response-method}
+
+\alias{countRuns}
+\alias{countRuns,AppAuth-method}
+\alias{countRuns,Response-method}
+
 
 
 \title{\code{Runs} and \code{RunsSummary} objects}

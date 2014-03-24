@@ -71,10 +71,13 @@ setMethod("POST", "ServiceURI",
           })
 
 
-
-
+## @...     are parameters send to getForm()
+##          Often used options: curl = handler
+## @asJSON  Logical switch. If TRUE (default) then the output is parsed
+##          from a JSON stream to an R list using fromJSON().
+##          Otherwise the raw string is return as the body elemnt. 
 setMethod("GET", "ServiceURI",
-          function(x, resource, ..., verbose = FALSE) {
+          function(x, resource, ..., asJSON = TRUE, verbose = FALSE) {
             H <- basicHeaderGatherer()
             B <- basicTextGatherer()
             suppressWarnings(getForm(uri(x, resource),
@@ -83,9 +86,12 @@ setMethod("GET", "ServiceURI",
                                        writefunction = B$update), ...))
             ## H <- H$value() # we could use the header to check if the content is JSON
             ##grepl("application/json", H["Content-Type"]) == TRUE !!!
-            return(list(header = H$value(),
-                        body = fromJSON(B$value(), simplifyWithNames = FALSE, nullValue = NA)))
+            body <- if(asJSON)
+                fromJSON(B$value(), simplifyWithNames = FALSE, nullValue = NA)
+            else
+                B$value()
+            
+            return(list(header = H$value(), body = body))
           })
-
 
 

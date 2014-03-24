@@ -14,6 +14,10 @@
 \alias{listAppSessions}
 \alias{listAppSessions,AppAuth-method}
 
+\alias{countAppSessions}
+\alias{countAppSessions,AppAuth-method}
+\alias{countAppSessions,Response-method}
+
 \alias{updateAppSessions}
 \alias{updateAppSessions,AppAuth-method}
 

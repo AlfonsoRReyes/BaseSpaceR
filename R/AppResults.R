@@ -65,6 +65,31 @@ setMethod("AppResults", "AppResultsSummary",
 ## AppResults belong to a Project, so one needs to know the project id to access the AppResult
 ## We allow for multiple project ids to be specified, in which case we return a list
 
+
+## count from AppAuth
+setMethod("countAppResults", "AppAuth",
+          function(x, projectId) {
+            projectId <- as_id(projectId)
+            res <- vapply(projectId, function(i) {
+              res <- x$doGET(resource = make_resource("projects", i, "appresults"), Limit = 0)
+              if(is.null(res))
+                return(NA_integer_)
+              
+              return(as.integer(res$TotalCount))
+            }, 0L)
+
+            return(res)
+          })
+            
+## count from any Response, Projects and ProjectsSummary instances
+setMethod("countAppResults", "Response", function(x, projectId) countAppResults(x@auth, projectId))
+setMethod("countAppResults", "Projects", function(x) countAppResults(x@auth, projectId = Id(x)))
+setMethod("countAppResults", "ProjectsSummary", function(x) countAppResults(x@auth, projectId = Id(x)))
+
+##setMethod("countAppResults", "AppSessions", function(x) countAppResults(x@auth, ... = Id(x)))
+##setMethod("countAppResults", "AppSessionsSummary", function(x) countAppResults(x@auth, ... = Id(x)))
+
+
 ## List from AppAuth
 setMethod("listAppResults", "AppAuth", 
           function(x, projectId, simplify = TRUE, ...) {

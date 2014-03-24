@@ -68,6 +68,18 @@ setMethod("Runs", "RunsSummary",
           })
 
 
+## count from AppAuth
+setMethod("countRuns", "AppAuth",
+          function(x) {
+            res <- x$doGET(resource = "users/current/runs", Limit = 0)
+            if(is.null(res))
+              return(NA_integer_)
+
+            return(as.integer(res$TotalCount))
+          })
+
+## count from any Response instance
+setMethod("countRuns", "Response", function(x) countRuns(x@auth))
 
 
 ## List from AppAuth

@@ -76,7 +76,53 @@ setMethod("Files", "FilesSummary",
 ## in which case we return a list
 ## Dispatchment will be done on AppAuth, Runs, Samples and AppResults 
 
-.FilesByResource <- function(x, what, id, simplify = TRUE, ...) {
+## @what %in% c("runs", "samples", "appresults")
+.countFilesByResource <- function(x, what = c("runs", "samples", "appresults"), id) {
+  what <- match.arg(what)
+  id <- as_id(id)
+
+  vapply(id, function(i) {
+    res <- x$doGET(resource = make_resource(what, i, "files"), Limit = 0)
+    if(is.null(res))
+      return(NA_integer_)
+    
+    return(as.integer(res$TotalCount))
+  }, 0L)
+}
+
+## TODO: check that only one of the 3 ids is specified 
+setMethod("countFiles", "AppAuth", 
+          function(x, runId, sampleId, appResultId) {
+            ## by Run Id
+            if(!missing(runId)) 
+              return(.countFilesByResource(x = x, what = "runs", id = runId))
+
+            ## by Sample Id
+            if(!missing(sampleId))
+              return(.countFilesByResource(x = x, what = "samples", id = sampleId))
+            
+            ## by AppResult Id
+            if(!missing(appResultId))
+              return(.countFilesByResource(x = x, what = "appresults", id = appResultId))
+          })
+
+## count from any Response, 
+setMethod("countFiles", "Response", function(x, ...) countFiles(x@auth, ...))
+## by runId
+setMethod("countFiles", "Runs", function(x) .countFilesByResource(x = x@auth, what = "runs", id = Id(x)))
+setMethod("countFiles", "RunsSummary", function(x) .countFilesByResource(x = x@auth, what = "runs", id = Id(x)))
+## by sampleId
+setMethod("countFiles", "Samples", function(x) .countFilesByResource(x = x@auth, what = "samples", id = Id(x)))
+setMethod("countFiles", "SamplesSummary", function(x) .countFilesByResource(x = x@auth, what = "samples", id = Id(x)))
+## by appResultId
+setMethod("countFiles", "AppResults", function(x) .countFilesByResource(x = x@auth, what = "appresults", id = Id(x)))
+setMethod("countFiles", "AppResultsSummary", function(x) .countFilesByResource(x = x@auth, what = "appresults", id = Id(x)))
+
+
+
+.FilesByResource <- function(x, what = c("runs", "samples", "appresults"),
+                             id, simplify = TRUE, ...) {
+  what <- match.arg(what)
   id <- as_id(id)
   res <- lapply(id, function(i) {
     res <- x$doGET(resource = make_resource(what, i, "files"), ...)
@@ -116,16 +162,22 @@ setMethod("listFiles", "AppAuth",
           })
 
 ## by runId
-setMethod("listFiles", "Runs",
-          function(x, simplify = TRUE, ...) listFiles(x@auth, runId = Id(x), simplify = simplify, ...))
+setMethod("listFiles", "Runs", function(x, simplify = TRUE, ...)
+          .FilesByResource(x = x@auth, what = "runs", id = Id(x), simplify = simplify, ...))
+setMethod("listFiles", "RunsSummary", function(x, simplify = TRUE, ...)
+          .FilesByResource(x = x@auth, what = "runs", id = Id(x), simplify = simplify, ...))
 
 ## by sampleId
-setMethod("listFiles", "Samples",
-          function(x, simplify = TRUE, ...) listFiles(x@auth, sampleId = Id(x), simplify = simplify, ...))
+setMethod("listFiles", "Samples", function(x, simplify = TRUE, ...)
+          .FilesByResource(x = x@auth, what = "samples", id = Id(x), simplify = simplify, ...))
+setMethod("listFiles", "SamplesSummary", function(x, simplify = TRUE, ...)
+          .FilesByResource(x = x@auth, what = "samples", id = Id(x), simplify = simplify, ...))
 
 ## by appResultId
-setMethod("listFiles", "AppResults",
-          function(x, simplify = TRUE, ...) listFiles(x@auth, appResultId = Id(x), simplify = simplify, ...))
+setMethod("listFiles", "AppResults", function(x, simplify = TRUE, ...)
+          .FilesByResource(x = x@auth, what = "appresults", id = Id(x), simplify = simplify, ...))
+setMethod("listFiles", "AppResultsSummary", function(x, simplify = TRUE, ...)
+          .FilesByResource(x = x@auth, what = "appresults", id = Id(x), simplify = simplify, ...))
 
 
 
@@ -191,23 +243,23 @@ setMethod("getFiles", "AppAuth",
                 if(verbose)
                   cat("done!\n")
               }
-              return(invisible())
-            }
-            
-            ## retrun the file content as a raw() vector
-            for(i in seq_along(fInfo)) {
-              if(verbose)
-                cat("Downloading file:", fInfo[[i]]$Name, "... ")
-              fInfo[[i]]$Content <- .toMem(res[[i]]$HrefContent, fInfo[[i]]$Size)
-              if(verbose)
-                cat("done!\n")
+              ##return(invisible())
+            } else {
+              ## retrun the file content as a raw() vector
+              for(i in seq_along(fInfo)) {
+                if(verbose)
+                  cat("Downloading file:", fInfo[[i]]$Name, "... ")
+                fInfo[[i]]$Content <- .toMem(res[[i]]$HrefContent, fInfo[[i]]$Size)
+                if(verbose)
+                  cat("done!\n")
+              }
             }
             
             if(length(fInfo) == 1L) 
               return(fInfo[[1L]])
 
             names(fInfo) <- id
-            return(fInfo)
+            return(invisible(fInfo))
           })
 
 

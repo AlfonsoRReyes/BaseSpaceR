@@ -63,6 +63,20 @@ setMethod("Projects", "ProjectsSummary",
 
 
 
+## count from AppAuth
+setMethod("countProjects", "AppAuth",
+          function(x) {
+            res <- x$doGET(resource = "users/current/projects", Limit = 0)
+            if(is.null(res))
+              return(NA_integer_)
+
+            return(as.integer(res$TotalCount))
+          })
+
+## count from any Response instance
+setMethod("countProjects", "Response", function(x) countProjects(x@auth))
+
+            
 ## List from AppAuth
 setMethod("listProjects", "AppAuth",
           function(x, ...) {

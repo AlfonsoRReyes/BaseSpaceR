@@ -1,3 +1,31 @@
+CHANGES IN VERSION 1.7.x
+-------------------------
+
+NEW FEATURES
+
+    o x$showResponse() will print the (JSON) body of the last response from the server
+    o New 'ResponseStatus' class for tracking the HTTP/server response status 
+    o New AppSessionAuth class to handle the authentication of Web and Native Apps.
+      It extends AppAuth class, by keeping track of the AppSession Id.
+      User-level constructors: authWebClient() and authNativeClient(), generator .AppSessionAuth().
+    o New count<RESOURCE> methods. These methods should be used to see the number of instances
+      of a articular resource are visible under the current scope. 
+      For example, the total number of Samples within a Project. Or the total number
+      of Files for a given AppResults. 
+ 
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o authenticateClient() function remove and replaced by authWebClient() and
+      authNativeClient(). AppAuth instances are used for desktop Apps only.
+
+
+BUG FIXES
+
+    o ...
+
+
+
 
 CHANGES IN VERSION 1.1.x
 -------------------------

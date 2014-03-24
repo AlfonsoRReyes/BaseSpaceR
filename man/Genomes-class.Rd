@@ -19,6 +19,11 @@
 \alias{listGenomes,AppAuth-method}
 \alias{listGenomes,Response-method}
 
+\alias{listGenomes}
+\alias{listGenomes,AppAuth-method}
+
+\alias{countGenomes}
+
 
 \title{\code{Genomes} and \code{GenomesSummary} objects}
 

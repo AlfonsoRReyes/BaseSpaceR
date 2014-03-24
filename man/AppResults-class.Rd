@@ -19,6 +19,12 @@
 \alias{listAppResults,AppAuth-method}
 \alias{listAppResults,Projects-method}
 
+\alias{countAppResults}
+\alias{countAppResults,AppAuth-method}
+\alias{countAppResults,Response-method}
+\alias{countAppResults,Projects-method}
+\alias{countAppResults,ProjectsSummary-method}
+
 \alias{createAppResults}
 \alias{createAppResults,AppAuth-method}
 \alias{createAppResults,Projects-method}

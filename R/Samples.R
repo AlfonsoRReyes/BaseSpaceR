@@ -74,6 +74,27 @@ setMethod("Samples", "SamplesSummary",
 ## Samples belong to a Project, so one needs to know the project id to access the samples
 ## We allow for multiple project ids to be specified, in which case we return a list
 
+## count from AppAuth
+setMethod("countSamples", "AppAuth",
+          function(x, projectId) {
+            projectId <- as_id(projectId)
+            res <- vapply(projectId, function(i) {
+              res <- x$doGET(resource = make_resource("projects", i, "samples"), Limit = 0)
+              if(is.null(res))
+                return(NA_integer_)
+              
+              return(as.integer(res$TotalCount))
+            }, 0L)
+
+            return(res)
+          })
+            
+## count from any Response, Projects and ProjectsSummary instances
+setMethod("countSamples", "Response", function(x, projectId) countSamples(x@auth, projectId))
+setMethod("countSamples", "Projects", function(x) countSamples(x@auth, projectId = Id(x)))
+setMethod("countSamples", "ProjectsSummary", function(x) countSamples(x@auth, projectId = Id(x)))
+
+
 ## List from AppAuth
 setMethod("listSamples", "AppAuth",
           function(x, projectId, simplify = TRUE, ...) {
