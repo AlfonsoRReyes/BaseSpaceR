@@ -3,26 +3,36 @@ CHANGES IN VERSION 1.7.x
 
 NEW FEATURES
 
-    o x$showResponse() will print the (JSON) body of the last response from the server
-    o New 'ResponseStatus' class for tracking the HTTP/server response status 
-    o New AppSessionAuth class to handle the authentication of Web and Native Apps.
-      It extends AppAuth class, by keeping track of the AppSession Id.
-      User-level constructors: authWebClient() and authNativeClient(), generator .AppSessionAuth().
-    o New count<RESOURCE> methods. These methods should be used to see the number of instances
-      of a articular resource are visible under the current scope. 
+    o Improved API design and a cleaner representation of the BaseSpace Data Model. 
+    o New count<RESOURCE> methods. These methods should be used to get the number of
+	  instances of a particular resource which are visible under the current scope. 
       For example, the total number of Samples within a Project. Or the total number
-      of Files for a given AppResults. 
- 
-
+      of Files for a given AppResults.
+    o Improved authentication process. One can now seamlessly used the R SDK from with
+      Native Apps or Web Apps. New 'AppSessionAuth' class to handle the authentication
+	  in this cases. It extends the 'AppAuth' class, by keeping track of the AppSession Id.
+      User-level constructors: 
+		'authWebClient()' and 
+		'authNativeClient()'
+	  generator .AppSessionAuth().
+	o New mechanism for handling the BaseSpace server responses. 'ResponseStatus' class 
+	  is now used for tracking the HTTP/server response status and integrated in the 
+	  'AppAuth' interface. 'x$showResponse()' can now be used to print the (JSON) body
+	  of the last response from the server.
+    o Integration with some Bioconductor data structures. BAM data from BaseSpace can now
+	  be easily map to 'BamFile' objects.
+	
+	
 SIGNIFICANT USER-VISIBLE CHANGES
 
-    o authenticateClient() function remove and replaced by authWebClient() and
-      authNativeClient(). AppAuth instances are used for desktop Apps only.
+    o 'authenticateClient()' function remove and replaced by 'authWebClient()' and
+      'authNativeClient()'. 'AppAuth' instances are used for desktop Apps only.
 
 
 BUG FIXES
 
-    o ...
+    o Minor bug fixes with the authentication process.
+    o Method dispatchment now works as intended for 'listFiles' and 'Files'.
 
 
 
