@@ -1,0 +1,84 @@
+CHANGES IN VERSION 1.7.x
+-------------------------
+
+NEW FEATURES
+
+    o Improved API design and a cleaner representation of the BaseSpace Data Model. 
+    o New count<RESOURCE> methods. These methods should be used to get the number of
+	  instances of a particular resource which are visible under the current scope. 
+      For example, the total number of Samples within a Project. Or the total number
+      of Files for a given AppResults.
+    o Improved authentication process. One can now seamlessly used the R SDK from with
+      Native Apps or Web Apps. New 'AppSessionAuth' class to handle the authentication
+	  in this cases. It extends the 'AppAuth' class, by keeping track of the AppSession Id.
+      User-level constructors: 
+		'authWebClient()' and 
+		'authNativeClient()'
+	  generator .AppSessionAuth().
+	o New mechanism for handling the BaseSpace server responses. 'ResponseStatus' class 
+	  is now used for tracking the HTTP/server response status and integrated in the 
+	  'AppAuth' interface. 'x$showResponse()' can now be used to print the (JSON) body
+	  of the last response from the server.
+    o Integration with some Bioconductor data structures. BAM data from BaseSpace can now
+	  be easily map to 'BamFile' objects.
+	
+	
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o 'authenticateClient()' function remove and replaced by 'authWebClient()' and
+      'authNativeClient()'. 'AppAuth' instances are used for desktop Apps only.
+
+
+BUG FIXES
+
+    o Minor bug fixes with the authentication process.
+    o Method dispatchment now works as intended for 'listFiles' and 'Files'.
+
+
+
+
+CHANGES IN VERSION 1.1.x
+-------------------------
+
+NEW FEATURES
+
+    o New high level function performOAuth() makes the App authentication easier.    
+    o initializeAuth() now fires up a browser window and starts the OAuth v2 process.
+      Users can use 'useBrowser' parameter to control this behaviour.
+
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o requestAccessToken() now returns an integer giving the status of request:
+        *  1 if the request was succesful and an access_token was received
+	*  -1 if the AppAuth handle already contains a feasible access token
+	*  An integer larger than one if the request fails.
+      There is also a new 'verbose' parameter controling the messages shown to
+      the user. By default 'verbose = TRUE' 
+
+
+BUG FIXES
+
+   o Added end of line character to some messages.
+   o fileItem$Size is now stored as a numeric, thus allowing for file larger than 2GB.
+
+
+
+
+
+VERSION 1.0.0
+-------------------------
+
+PACKAGE FEATURES
+
+    o BaseSpaceR is a R SDK for Illumina's BaseSpace cloud computing environment,
+      enabling the rapid prototyping and development of production ready application
+      for next-gen sequencing data.
+
+    o It provides a set of S4 classes and methods to interface with BaseSpace data model.
+
+    o It allows for persistent connections with BaseSpace REST server and offers 
+      support for the REST API query parameters.
+
+    o It allows for queries across multiple Projects, Samples, Files, AppResults, etc.,
+      using vectorized operations in line with the R semantic.
