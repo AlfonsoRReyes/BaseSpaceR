@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.13.1
+-------------------------
+BUG FIXES
+
+Changed Access token and projects ID used in the vignette to reflect changes in
+the permission enforcements performed by BaseSpace 
+
+
 CHANGES IN VERSION 1.7.x
 -------------------------
 
