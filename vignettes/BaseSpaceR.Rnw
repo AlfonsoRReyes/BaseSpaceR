@@ -517,14 +517,14 @@ files.
 
 The AppResults resource is used for keeping the result of an App. On top of the typical 
 listing and accessing data from this resource, the user can also create new and update 
-existing AppResults. The method used for adding a new AppResulats instance is 
+existing AppResults. The method used for adding a new AppResult instance is 
 {\tt createAppResults()}. As in the case of Projects, the user need the right permission 
 to be able to create a new instance. 
 
-We can quickly browse an AppResults from the project with ID $12$.
+We can quickly browse an AppResults from the project with ID $21383369$.
 
 <<>>=
-reseq <- listAppResults(aAuth, projectId = 12, Limit = 1)
+reseq <- listAppResults(aAuth, projectId = 21383369, Limit = 1)
 AppResults(reseq)
 @ 
 

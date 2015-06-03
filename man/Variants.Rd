@@ -55,7 +55,7 @@ getVariants(x, ...)
 data(aAuth)
 
 ## get the ids of VCF files (within an AppResult? )
-reseq <- listAppResults(aAuth, projectId = 12, Limit = 1)
+reseq <- listAppResults(aAuth, projectId = 21383369, Limit = 1)
 AppResults(reseq)
 
 vcfs <- listFiles(AppResults(reseq), Extensions = ".vcf")
