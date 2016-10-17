@@ -3,7 +3,7 @@ Title: R SDK for BaseSpace RESTful API
 Description: A rich R interface to Illumina's BaseSpace cloud computing
 	     environment, enabling the fast development of data analysis and
 	     visualisation tools.
-Version: 1.17.0
+Version: 1.18.0
 Author: Adrian Alexa
 Maintainer: Jared O'Connell <joconnell@illumina.com>
 biocViews: Infrastructure, DataRepresentation, ConnectTools, Software,
